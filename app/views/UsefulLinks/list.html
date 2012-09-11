@@ -1,0 +1,56 @@
+#{extends 'CRUD/layout.html' /}
+#{set title:messages.get('crud.list.title', type.name) /}
+#{set title:messages.get('crud.show.title', type.modelName) /}
+<script src="http://ajax.googleapis.com/ajax/libs/prototype/1.7.1.0/prototype.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/scriptaculous/1.9.0/scriptaculous.js"></script>
+
+<div id="crudList" class="${type.name}">
+   <div id=buttonPannel>
+    	<p id="crudListAdd">
+       	 <a href="@{blank()}">&{'crud.add', type.modelName}</a>
+    	</p>  
+   		<p id="crudListAddClassification">
+        	<a href="/admin/classifications">&{'crud.add', 'classification'}</a>
+    	</p>
+ 	</div> 
+   
+    <div id="crudListSearch">
+        #{crud.search /}
+    </div>
+
+    <div id="crudListTable">
+        #{crud.table fields:['description','classification','submitter','postedAt', 'rating']}
+       	
+       	#{crud.custom 'link'}
+   			<a href="${object.link}">
+     			${object.description}
+     		</a>
+     	#{/crud.custom}
+       	
+       	
+     	
+     #{crud.custom 'submitter'}
+   			<span id="link-${object.id}">${object.link}</span>
+				<script type="text/javascript">
+ 				new Ajax.InPlaceEditor('link-${object.id}', '/usefullinks/editme?id=${object.id}&field=submitter');
+			</script>
+   #{/crud.custom}
+     	
+		#{crud.custom 'rating'}
+			<a id="up" href="@{Rating.increaseRating(object.id)}" ><img src="/public/images/arrow_up.png"/></a>
+     		<a id="down" href="@{Rating.decreaseRating(object.id)}"><img src="/public/images/arrow_down.png"/></a>
+     		<span id = "rating">${object.rating}</span>
+			<a id="delete" href="@{UsefulLinks.remove(object.id)}"><img src="/public/images/cross.png" style="float:right;"/></a>
+     	#{/crud.custom}
+    	#{/crud.table} 
+    </p>
+    
+    </div>
+
+    <div id="crudListPagination">
+        #{crud.pagination /}
+    </div>
+</div>
+
+
+

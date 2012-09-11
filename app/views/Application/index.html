@@ -1,0 +1,6 @@
+	#{crud.custom 'link'}
+   			<span id="link-${object.id}">${object.link}</span>
+				<script type="text/javascript">
+ 				new Ajax.InPlaceEditor('link-${object.id}', '/usefullinks/editme?id=${object.id}');
+			</script>
+   		#{/crud.custom}
