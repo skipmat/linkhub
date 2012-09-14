@@ -1,9 +1,9 @@
-crud.title=Link-Hoarder
+crud.title=Link-Hub
 link=Link
 classification=Classification 
-description=Description 
+description=Description
 postedAt=Posted
-submitter=Submitter
+submitter=Submitted
 rating=	Rate Article
 UsefulLinks=Useful Links
 LinkClassification=Link Classification

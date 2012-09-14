@@ -1,13 +1,12 @@
 package models;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
-import notifiers.Mails;
+import play.data.validation.MaxSize;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import controllers.CRUD.Hidden;
@@ -19,6 +18,7 @@ public class UsefulLink extends Model {
 	public String link;
 
 	@Required
+	@MaxSize(30)
 	public String description;
 
 	@Required
@@ -56,7 +56,7 @@ public class UsefulLink extends Model {
 	}
 	
 	public UsefulLink(){
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy HH:mm");
 		postedAt = formatter.format(new Date());
 	}
 }

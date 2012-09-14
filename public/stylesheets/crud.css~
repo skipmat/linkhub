@@ -22,7 +22,6 @@
 #crud #crudHeader h1 {
 	margin: 0;
 	font-weight: normal;
-	font-size:65px;
 }
 
 #crud #crudHeader h1 a {
@@ -86,26 +85,9 @@
 	font-weight: bold;
 }
 
-.UsefulLinks table th {
+#crud #crudContent table th {
+	text-align: left;
 	padding: 6px 5px;
-	text-align:left;
-}
-
-.UsefulLinks  table th:last-child {
-	padding: 6px 5px;
-	text-align:center;
-}
-
-.UsefulLinks table th:first-child {
-	padding: 6px 5px;
-	text-align:left;
-	width: 152px;
-}
-
-#crud #crudContent table th:nth-child(2) {
-	padding: 6px 5px;
-	text-align:left;
-	width: 1026px;
 }
 
 #crud #crudContent table td {
@@ -168,6 +150,7 @@ label {
 }
 
 .crudButtons {
+	background: #efefef;
 	text-align: right;
 	margin: 0;
 	padding: 10px;
@@ -343,6 +326,4 @@ form .removeAttachment {
 #link table td th{
 	width:4%;
 }
-
-#
 	

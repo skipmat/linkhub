@@ -9,13 +9,15 @@ public class Rating extends Controller{
 		UsefulLink link = UsefulLink.findById(id);
 		link.rating++;
 		link.save();
-		redirect("/UsefulLinks/list");
+		renderText(link.rating);
+		//redirect("/UsefulLinks/list");
 	}
 	
 	public static void decreaseRating(Long id){
 		UsefulLink link = UsefulLink.findById(id);
 		link.rating--;
 		link.save();
-		redirect("/UsefulLinks/list");
+		renderText(link.rating);
+		//redirect("/UsefulLinks/list");
 	}
 }

@@ -1,8 +1,92 @@
 #{extends 'CRUD/layout.html' /}
+#{script 'jquery-1.6.4.min.js' /}
 #{set title:messages.get('crud.list.title', type.name) /}
 #{set title:messages.get('crud.show.title', type.modelName) /}
 <script src="http://ajax.googleapis.com/ajax/libs/prototype/1.7.1.0/prototype.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/scriptaculous/1.9.0/scriptaculous.js"></script>
+
+
+<script>
+jQuery.noConflict();
+
+	function remove(documentId, submitter){
+		var result = confirm("remove " + submitter + "'s post?");
+		if (result == true){
+  			jQuery.get('UsefulLinks/remove', {id : documentId} ).success(function(data){
+			jQuery('#link-' + documentId).parent().parent().hide();
+		})
+  		}
+	}
+	
+	function rateUp(documentId){
+		jQuery.get('Rating/increaseRating', {id : documentId} ).success(function(data){
+			updateStars(documentId, data);
+		
+		})
+	}
+	
+	function rateDown(documentId){
+		jQuery.get('Rating/decreaseRating', {id : documentId} ).success(function(data){
+			updateStars(documentId, data);
+		
+		})
+	}
+	
+	function updateStars(documentId, rating) {
+		if (rating < 0 ) {
+			jQuery('#trooper4-' + documentId).show();
+		} else {
+			jQuery('#trooper4-' + documentId).hide();
+		}
+		if (rating < - 3 ) {
+			jQuery('#trooper3-' + documentId).show();
+		} else {
+			jQuery('#trooper3-' + documentId).hide();
+		}
+		if (rating < - 6 ) {
+			jQuery('#trooper2-' + documentId).show();
+		} else {
+			jQuery('#trooper2-' + documentId).hide();
+		}
+		if (rating < - 9 ) {
+			jQuery('#trooper1-' + documentId).show();
+		} else {
+			jQuery('#trooper1-' + documentId).hide();
+		}
+		if (rating > 0 ) {
+			jQuery('#star1-' + documentId).show();
+		} else {
+			jQuery('#star1-' + documentId).hide();
+		}
+		if (rating > 3 ) {
+			jQuery('#star2-' + documentId).show();
+		}	else {
+			jQuery('#star2-' + documentId).hide();
+		}
+		if (rating > 6 ) {
+			jQuery('#star3-' + documentId).show();
+		}	else {
+			jQuery('#star3-' + documentId).hide();
+		}
+		if (rating > 9 ) {
+			jQuery('#star4-' + documentId).show();
+		}	else {
+			jQuery('#star4-' + documentId).hide();
+		}
+	}
+</script>
+
+
+
+<form name="addLink" action="html_form_action.asp" method="get">
+Link: <input type="text" id="link" name="link" value="">
+Description: <input type="text" id="description" name="description" value="" />
+Classification: <select id="object_classification" name="object.classification.id">
+</select>
+Submitter: <input type="text" id="submitter" name="submitter"" value="" />
+<input type="submit" name="_save" value="Submit" />
+</form>
+
 
 <div id="crudList" class="${type.name}">
    <div id=buttonPannel>
@@ -19,28 +103,63 @@
     </div>
 
     <div id="crudListTable">
-        #{crud.table fields:['description','classification','submitter','postedAt', 'rating']}
+        #{crud.table fields:['classification','link','submitter','rating']}
        	
-       	#{crud.custom 'link'}
-   			<a href="${object.link}">
-     			${object.description}
-     		</a>
+       	#{crud.custom 'classification'}
+       		<span id="classification">${object.classification}</a>
+     		</span>
      	#{/crud.custom}
        	
-       	
-     	
-     #{crud.custom 'submitter'}
-   			<span id="link-${object.id}">${object.link}</span>
-				<script type="text/javascript">
- 				new Ajax.InPlaceEditor('link-${object.id}', '/usefullinks/editme?id=${object.id}&field=submitter');
+       	#{crud.custom 'link'}
+       		<span id="link-${object.id}"><a href="${object.link}">${object.description}</a>
+     		</span>
+     	#{/crud.custom}	
+   	
+  		#{crud.custom 'submitter'}
+   			<span id="submitter-${object.id}">by ${object.submitter} on ${object.postedAt}</span>
+			<script type="text/javascript">
+ 				new Ajax.InPlaceEditor('submitter-${object.id}', '/usefullinks/editme?id=${object.id}&field=submitter');
 			</script>
-   #{/crud.custom}
+  		#{/crud.custom}
      	
 		#{crud.custom 'rating'}
-			<a id="up" href="@{Rating.increaseRating(object.id)}" ><img src="/public/images/arrow_up.png"/></a>
-     		<a id="down" href="@{Rating.decreaseRating(object.id)}"><img src="/public/images/arrow_down.png"/></a>
-     		<span id = "rating">${object.rating}</span>
-			<a id="delete" href="@{UsefulLinks.remove(object.id)}"><img src="/public/images/cross.png" style="float:right;"/></a>
+			<div id="negativeRating" style="display:inline-block; width:42%;">
+			<span><img id="trooper1-${object.id}" src="/public/images/trooper.png" style="float:center; padding-left: 10px; 
+     			#{if object.rating > - 9}display:none#{/if}" />
+     		</span>
+     		
+     		<span><img id="trooper2-${object.id}" src="/public/images/trooper.png" style="float:center; padding-left: 10px; 
+     			#{if object.rating > - 6}display:none#{/if}" />
+     		</span>
+     		<span><img id="trooper3-${object.id}" src="/public/images/trooper.png" style="float:center; padding-left: 10px; 
+     			#{if object.rating > - 3}display:none#{/if}" />
+     		</span>
+     		<span><img id="trooper4-${object.id}" src="/public/images/trooper.png" style="float:center; padding-left: 10px; 
+     			#{if object.rating == 0}display:none#{/if}" />
+     		</span>
+     		</div>
+			
+			<div id="ratingInteraction" style="display:inline-block; padding-top: 9px;">
+				<a id="down" href="javascript:rateDown(${object.id})"><img src="/public/images/rating_down.png"/></a>
+     			<a id="up" href="javascript:rateUp(${object.id})" ><img src="/public/images/rating_up.png"/></a>
+     		</div>
+     		
+     		<div id="positiveRating"style="display:inline-block";>
+     		<span><img id="star1-${object.id}" src="/public/images/mario_star.png" style="float:center; padding-left: 10px; 
+     			#{if object.rating == 0}display:none#{/if}" />
+     		</span>
+     		<span><img id="star2-${object.id}" src="/public/images/mario_star.png" style="float:center; padding-left: 2px;
+     			#{if object.rating < 3}display:none#{/if}" /
+     		</span>
+     		<span><img id="star3-${object.id}" src="/public/images/mario_star.png" style="float:center; padding-left: 2px;
+     			#{if object.rating < 6}display:none#{/if}" />
+     		</span>
+     		<span><img id="star4-${object.id}" src="/public/images/mario_oneup.png" style="float:center; padding-left: 2px;
+     			#{if object.rating < 9 }display:none#{/if}" />
+     		</span>
+     		</div>
+     		
+     		<a id="delete" href="javascript:remove(${object.id}, '${object.submitter}')"><img src="/public/images/cross.png" style="float:right;"/></a>
      	#{/crud.custom}
     	#{/crud.table} 
     </p>
@@ -51,6 +170,8 @@
         #{crud.pagination /}
     </div>
 </div>
+
+
 
 
 
