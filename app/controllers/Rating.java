@@ -2,6 +2,7 @@ package controllers;
 
 import models.UsefulLink;
 import play.mvc.Controller;
+import play.mvc.Http.Response;
 
 public class Rating extends Controller{
 	
@@ -9,15 +10,17 @@ public class Rating extends Controller{
 		UsefulLink link = UsefulLink.findById(id);
 		link.rating++;
 		link.save();
+		String cookieName = "linkHubIdRating-" + Long.toString(id);
+		response.setCookie(cookieName, Long.toString(id));
 		renderText(link.rating);
-		//redirect("/UsefulLinks/list");
 	}
 	
 	public static void decreaseRating(Long id){
 		UsefulLink link = UsefulLink.findById(id);
 		link.rating--;
 		link.save();
+		String cookieName = "linkHubIdRating-" + Long.toString(id);
+		response.setCookie(cookieName, Long.toString(id));
 		renderText(link.rating);
-		//redirect("/UsefulLinks/list");
 	}
 }

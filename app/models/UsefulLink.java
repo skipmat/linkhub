@@ -18,7 +18,7 @@ public class UsefulLink extends Model {
 	public String link;
 
 	@Required
-	@MaxSize(30)
+	@MaxSize(100)
 	public String description;
 
 	@Required

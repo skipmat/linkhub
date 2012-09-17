@@ -99,14 +99,24 @@
 .UsefulLinks table th:first-child {
 	padding: 6px 5px;
 	text-align:left;
-	width: 152px;
+	width: 200px;
 }
 
 #crud #crudContent table th:nth-child(2) {
 	padding: 6px 5px;
 	text-align:left;
-	width: 1026px;
+	width: 740px;
 }
+
+#crud #crudContent table th:nth-child(4	) {
+	width: 510px;
+}
+
+#negativeRating{
+text-align:right;
+}
+
+
 
 #crud #crudContent table td {
 	text-align: left;

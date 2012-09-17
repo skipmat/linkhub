@@ -9,6 +9,14 @@
 <script>
 jQuery.noConflict();
 
+function limitText(limitField, limitCount, limitNum) {
+	if (limitField.value.length > limitNum) {
+		limitField.value = limitField.value.substring(0, limitNum);
+	} else {
+		limitCount.value = limitNum - limitField.value.length;
+	}
+}
+
 	function remove(documentId, submitter){
 		var result = confirm("remove " + submitter + "'s post?");
 		if (result == true){
@@ -18,6 +26,14 @@ jQuery.noConflict();
   		}
 	}
 	
+	function rateDown(documentId){
+		src="/public/images/Coin.wav";
+		jQuery.get('Rating/decreaseRating', {id : documentId} ).success(function(data){
+			updateStars(documentId, data);
+		
+		})
+	}
+	
 	function rateUp(documentId){
 		jQuery.get('Rating/increaseRating', {id : documentId} ).success(function(data){
 			updateStars(documentId, data);
@@ -25,20 +41,53 @@ jQuery.noConflict();
 		})
 	}
 	
-	function rateDown(documentId){
-		jQuery.get('Rating/decreaseRating', {id : documentId} ).success(function(data){
-			updateStars(documentId, data);
-		
-		})
+	function checkCookies(documentId, direction){
+		var alreadyRated = true;
+		var allcookies = document.cookie;
+		cookiearray  = allcookies.split(';');
+
+   		for(var i=0; i<cookiearray.length; i++){
+      		
+      		name = cookiearray[i].split('=')[0];
+      		value = cookiearray[i].split('=')[1];
+      		cookieName = (" linkHubIdRating-" + documentId);      		
+      		documentId = documentId.toString();
+      		name = name.toString();
+      		value = value.toString();
+      		
+      		if (cookieName == name){
+      			if (value == documentId){
+      				alert("You've already rated this article");
+      				alreadyRated = true;
+      			} else{
+      				alreadyRated = false;
+      			}
+      		} else{
+      			alreadyRated = false;
+      		}
+   		}
+   		
+   		if (alreadyRated == false){
+   			if (direction == 'up'){
+   				rateUp(documentId)
+   			}
+   			if (direction == 'down'){
+   				rateDown(documentId)}
+   			}
 	}
-	
+
 	function updateStars(documentId, rating) {
 		if (rating < 0 ) {
+			jQuery('#trooper5-' + documentId).show();
+		} else {
+			jQuery('#trooper5-' + documentId).hide();
+		}
+		if (rating < - 2 ) {
 			jQuery('#trooper4-' + documentId).show();
 		} else {
 			jQuery('#trooper4-' + documentId).hide();
 		}
-		if (rating < - 3 ) {
+		if (rating < - 4 ) {
 			jQuery('#trooper3-' + documentId).show();
 		} else {
 			jQuery('#trooper3-' + documentId).hide();
@@ -48,7 +97,7 @@ jQuery.noConflict();
 		} else {
 			jQuery('#trooper2-' + documentId).hide();
 		}
-		if (rating < - 9 ) {
+		if (rating < - 8 ) {
 			jQuery('#trooper1-' + documentId).show();
 		} else {
 			jQuery('#trooper1-' + documentId).hide();
@@ -58,34 +107,31 @@ jQuery.noConflict();
 		} else {
 			jQuery('#star1-' + documentId).hide();
 		}
-		if (rating > 3 ) {
+		if (rating > 2 ) {
 			jQuery('#star2-' + documentId).show();
 		}	else {
 			jQuery('#star2-' + documentId).hide();
 		}
-		if (rating > 6 ) {
+		if (rating > 4 ) {
 			jQuery('#star3-' + documentId).show();
 		}	else {
 			jQuery('#star3-' + documentId).hide();
 		}
-		if (rating > 9 ) {
+		if (rating > 6 ) {
 			jQuery('#star4-' + documentId).show();
 		}	else {
 			jQuery('#star4-' + documentId).hide();
+		}
+		if (rating > 8 ) {
+			jQuery('#star5-' + documentId).show();
+		}	else {
+			jQuery('#star5-' + documentId).hide();
 		}
 	}
 </script>
 
 
 
-<form name="addLink" action="html_form_action.asp" method="get">
-Link: <input type="text" id="link" name="link" value="">
-Description: <input type="text" id="description" name="description" value="" />
-Classification: <select id="object_classification" name="object.classification.id">
-</select>
-Submitter: <input type="text" id="submitter" name="submitter"" value="" />
-<input type="submit" name="_save" value="Submit" />
-</form>
 
 
 <div id="crudList" class="${type.name}">
@@ -124,38 +170,43 @@ Submitter: <input type="text" id="submitter" name="submitter"" value="" />
      	
 		#{crud.custom 'rating'}
 			<div id="negativeRating" style="display:inline-block; width:42%;">
-			<span><img id="trooper1-${object.id}" src="/public/images/trooper.png" style="float:center; padding-left: 10px; 
-     			#{if object.rating > - 9}display:none#{/if}" />
-     		</span>
-     		
-     		<span><img id="trooper2-${object.id}" src="/public/images/trooper.png" style="float:center; padding-left: 10px; 
+			<span><img id="trooper1-${object.id}" src="/public/images/missile.png" style="float:center; padding-left: 2px; 
      			#{if object.rating > - 6}display:none#{/if}" />
      		</span>
-     		<span><img id="trooper3-${object.id}" src="/public/images/trooper.png" style="float:center; padding-left: 10px; 
-     			#{if object.rating > - 3}display:none#{/if}" />
+     		<span><img id="trooper2-${object.id}" src="/public/images/squid.png" style="float:center; padding-left: 2px; 
+     			#{if object.rating > - 6}display:none#{/if}" />
      		</span>
-     		<span><img id="trooper4-${object.id}" src="/public/images/trooper.png" style="float:center; padding-left: 10px; 
-     			#{if object.rating == 0}display:none#{/if}" />
+     		<span><img id="trooper3-${object.id}" src="/public/images/helmet.png" style="float:center; padding-left: 2px; 
+     			#{if object.rating > - 4}display:none#{/if}" />
      		</span>
+     		<span><img id="trooper4-${object.id}" src="/public/images/trooper.png" style="float:center; padding-left: 2px; 
+     			#{if object.rating > - 2}display:none#{/if}" />
+     		</span>
+     		<span><img id="trooper5-${object.id}" src="/public/images/trooper1.png" style="float:center; padding-left: 2px; 
+     			#{if object.rating == 0 || object.rating > 0}display:none#{/if}" />
+     		</span>
+     		
      		</div>
-			
 			<div id="ratingInteraction" style="display:inline-block; padding-top: 9px;">
-				<a id="down" href="javascript:rateDown(${object.id})"><img src="/public/images/rating_down.png"/></a>
-     			<a id="up" href="javascript:rateUp(${object.id})" ><img src="/public/images/rating_up.png"/></a>
+				<a id="down" href="javascript:checkCookies(${object.id}, 'down')"><img src="/public/images/rating_down.png"/></a>
+     			<a id="up" href="javascript:checkCookies(${object.id}, 'up')" ><img src="/public/images/rating_up.png"/></a>
      		</div>
      		
      		<div id="positiveRating"style="display:inline-block";>
-     		<span><img id="star1-${object.id}" src="/public/images/mario_star.png" style="float:center; padding-left: 10px; 
-     			#{if object.rating == 0}display:none#{/if}" />
+     		<span><img id="star1-${object.id}" src="/public/images/mario_coin.png" style="float:center; padding-left: 2px; 
+     			#{if object.rating == 0 || object.rating < 0}display:none#{/if}" />
      		</span>
-     		<span><img id="star2-${object.id}" src="/public/images/mario_star.png" style="float:center; padding-left: 2px;
+     		<span><img id="star2-${object.id}" src="/public/images/mario_sizeup.png" style="float:center; padding-left: 2px;
      			#{if object.rating < 3}display:none#{/if}" /
      		</span>
-     		<span><img id="star3-${object.id}" src="/public/images/mario_star.png" style="float:center; padding-left: 2px;
-     			#{if object.rating < 6}display:none#{/if}" />
+     		<span><img id="star3-${object.id}" src="/public/images/mario_fireball.png" style="float:center; padding-left: 2px;
+     			#{if object.rating < 5}display:none#{/if}" />
      		</span>
-     		<span><img id="star4-${object.id}" src="/public/images/mario_oneup.png" style="float:center; padding-left: 2px;
-     			#{if object.rating < 9 }display:none#{/if}" />
+     		<span><img id="star4-${object.id}" src="/public/images/mario_star.png" style="float:center; padding-left: 2px;
+     			#{if object.rating < 7}display:none#{/if}" />
+     		</span>
+     		<span><img id="star5-${object.id}" src="/public/images/mario_oneup.png" style="float:center; padding-left: 2px;
+     			#{if object.rating < 9}display:none#{/if}" />
      		</span>
      		</div>
      		
