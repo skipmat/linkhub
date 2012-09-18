@@ -40,6 +40,10 @@ public class UsefulLink extends Model {
 
 	@Override
 	public void _save() {
+		
+		if (!link.startsWith("http://")){
+			link = "http://" + link;
+		}
 		super._save();
 		Mails.mailRecipients(this);
 	}
