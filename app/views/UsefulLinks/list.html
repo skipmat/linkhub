@@ -27,7 +27,6 @@ function limitText(limitField, limitCount, limitNum) {
 	}
 	
 	function rateDown(documentId){
-		src="/public/images/Coin.wav";
 		jQuery.get('Rating/decreaseRating', {id : documentId} ).success(function(data){
 			updateStars(documentId, data);
 		

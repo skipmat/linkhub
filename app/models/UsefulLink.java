@@ -6,6 +6,8 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
+import notifiers.Mails;
+
 import play.data.validation.MaxSize;
 import play.data.validation.Required;
 import play.db.jpa.Model;
@@ -39,7 +41,7 @@ public class UsefulLink extends Model {
 	@Override
 	public void _save() {
 		super._save();
-		//Mails.mailRecipients(this);
+		Mails.mailRecipients(this);
 	}
 	
 	@Override

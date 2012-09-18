@@ -14,15 +14,6 @@ public class UsefulLinks extends CRUD {
 		redirect("/UsefulLinks/list");
 
 	}
-	
-	/*public static void create(String link, String description, String classification, String submitter) {
-		Parameter<String> params = new Parameter<String>();
-		UsefulLink link = UsefulLink._save();
-		link.delete();
-		redirect("/UsefulLinks/list");
-
-	}*/
-	
 
 	public static void editMe(Long id, String field, String value) {
 		UsefulLink link = UsefulLink.findById(id);
