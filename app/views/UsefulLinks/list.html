@@ -41,7 +41,7 @@ function limitText(limitField, limitCount, limitNum) {
 	}
 	
 	function checkCookies(documentId, direction){
-		var alreadyRated = true;
+		var alreadyRated = false;
 		var allcookies = document.cookie;
 		cookiearray  = allcookies.split(';');
 
@@ -49,21 +49,21 @@ function limitText(limitField, limitCount, limitNum) {
       		
       		name = cookiearray[i].split('=')[0];
       		value = cookiearray[i].split('=')[1];
-      		cookieName = (" linkHubIdRating-" + documentId);      		
-      		documentId = documentId.toString();
-      		name = name.toString();
-      		value = value.toString();
       		
-      		if (cookieName == name){
-      			if (value == documentId){
-      				alert("You've already rated this article");
-      				alreadyRated = true;
-      			} else{
-      				alreadyRated = false;
-      			}
-      		} else{
-      			alreadyRated = false;
-      		}
+      		if (name != "" && value != ""){
+      		
+      			cookieName = (" linkHubIdRating-" + documentId);      		
+      			documentId = documentId.toString();
+      			name = name.toString();
+      			value = value.toString();
+      		
+      				if (cookieName == name){
+      					if (value == documentId){
+      						alert("You've already rated this article");
+      						alreadyRated = true;
+      					} 
+      				} 
+   			}
    		}
    		
    		if (alreadyRated == false){
@@ -81,22 +81,22 @@ function limitText(limitField, limitCount, limitNum) {
 		} else {
 			jQuery('#trooper5-' + documentId).hide();
 		}
-		if (rating < - 2 ) {
+		if (rating < - 1 ) {
 			jQuery('#trooper4-' + documentId).show();
 		} else {
 			jQuery('#trooper4-' + documentId).hide();
 		}
-		if (rating < - 4 ) {
+		if (rating < - 2 ) {
 			jQuery('#trooper3-' + documentId).show();
 		} else {
 			jQuery('#trooper3-' + documentId).hide();
 		}
-		if (rating < - 6 ) {
+		if (rating < - 3 ) {
 			jQuery('#trooper2-' + documentId).show();
 		} else {
 			jQuery('#trooper2-' + documentId).hide();
 		}
-		if (rating < - 8 ) {
+		if (rating < - 4 ) {
 			jQuery('#trooper1-' + documentId).show();
 		} else {
 			jQuery('#trooper1-' + documentId).hide();
@@ -106,22 +106,22 @@ function limitText(limitField, limitCount, limitNum) {
 		} else {
 			jQuery('#star1-' + documentId).hide();
 		}
-		if (rating > 2 ) {
+		if (rating > 1 ) {
 			jQuery('#star2-' + documentId).show();
 		}	else {
 			jQuery('#star2-' + documentId).hide();
 		}
-		if (rating > 4 ) {
+		if (rating > 2 ) {
 			jQuery('#star3-' + documentId).show();
 		}	else {
 			jQuery('#star3-' + documentId).hide();
 		}
-		if (rating > 6 ) {
+		if (rating > 3 ) {
 			jQuery('#star4-' + documentId).show();
 		}	else {
 			jQuery('#star4-' + documentId).hide();
 		}
-		if (rating > 8 ) {
+		if (rating > 4 ) {
 			jQuery('#star5-' + documentId).show();
 		}	else {
 			jQuery('#star5-' + documentId).hide();
@@ -162,21 +162,18 @@ function limitText(limitField, limitCount, limitNum) {
    	
   		#{crud.custom 'submitter'}
    			<span id="submitter-${object.id}">by ${object.submitter} on ${object.postedAt}</span>
-			<script type="text/javascript">
- 				new Ajax.InPlaceEditor('submitter-${object.id}', '/usefullinks/editme?id=${object.id}&field=submitter');
-			</script>
   		#{/crud.custom}
      	
 		#{crud.custom 'rating'}
 			<div id="negativeRating" style="display:inline-block; width:42%;">
 			<span><img id="trooper1-${object.id}" src="/public/images/missile.png" style="float:center; padding-left: 2px; 
-     			#{if object.rating > - 6}display:none#{/if}" />
+     			#{if object.rating > - 5}display:none#{/if}" />
      		</span>
      		<span><img id="trooper2-${object.id}" src="/public/images/squid.png" style="float:center; padding-left: 2px; 
-     			#{if object.rating > - 6}display:none#{/if}" />
+     			#{if object.rating > - 4}display:none#{/if}" />
      		</span>
      		<span><img id="trooper3-${object.id}" src="/public/images/helmet.png" style="float:center; padding-left: 2px; 
-     			#{if object.rating > - 4}display:none#{/if}" />
+     			#{if object.rating > - 3}display:none#{/if}" />
      		</span>
      		<span><img id="trooper4-${object.id}" src="/public/images/trooper.png" style="float:center; padding-left: 2px; 
      			#{if object.rating > - 2}display:none#{/if}" />
@@ -196,16 +193,16 @@ function limitText(limitField, limitCount, limitNum) {
      			#{if object.rating == 0 || object.rating < 0}display:none#{/if}" />
      		</span>
      		<span><img id="star2-${object.id}" src="/public/images/mario_sizeup.png" style="float:center; padding-left: 2px;
-     			#{if object.rating < 3}display:none#{/if}" /
+     			#{if object.rating < 2}display:none#{/if}" /
      		</span>
      		<span><img id="star3-${object.id}" src="/public/images/mario_fireball.png" style="float:center; padding-left: 2px;
-     			#{if object.rating < 5}display:none#{/if}" />
+     			#{if object.rating < 3}display:none#{/if}" />
      		</span>
      		<span><img id="star4-${object.id}" src="/public/images/mario_star.png" style="float:center; padding-left: 2px;
-     			#{if object.rating < 7}display:none#{/if}" />
+     			#{if object.rating < 4}display:none#{/if}" />
      		</span>
      		<span><img id="star5-${object.id}" src="/public/images/mario_oneup.png" style="float:center; padding-left: 2px;
-     			#{if object.rating < 9}display:none#{/if}" />
+     			#{if object.rating < 5}display:none#{/if}" />
      		</span>
      		</div>
      		

@@ -9,7 +9,7 @@ public class Rating extends Controller{
 	public static void increaseRating(Long id){
 		UsefulLink link = UsefulLink.findById(id);
 		link.rating++;
-		link.save();
+		link.saveRating();
 		String cookieName = "linkHubIdRating-" + Long.toString(id);
 		response.setCookie(cookieName, Long.toString(id));
 		renderText(link.rating);
@@ -18,7 +18,7 @@ public class Rating extends Controller{
 	public static void decreaseRating(Long id){
 		UsefulLink link = UsefulLink.findById(id);
 		link.rating--;
-		link.save();
+		link.saveRating();
 		String cookieName = "linkHubIdRating-" + Long.toString(id);
 		response.setCookie(cookieName, Long.toString(id));
 		renderText(link.rating);

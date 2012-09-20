@@ -13,7 +13,7 @@ public class Mails extends Mailer {
 
 	public static boolean mailRecipients(UsefulLink newLink) {
 		setFrom(Play.configuration.getProperty("mail.From"));
-		setSubject("New '" + newLink.getClassification() + "' related link added: " + newLink.getDescription());
+		setSubject("New '" + newLink.getClassification() + "' related link: " + newLink.getDescription());
 		addRecipient(Play.configuration.getProperty("mail.Recipients"));
 		return sendAndWait(newLink);
 	}
