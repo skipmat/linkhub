@@ -117,7 +117,9 @@
 text-align:right;
 }
 
-
+.Classifications {
+text-align: left;
+}
 
 #crud #crudContent table td {
 	text-align: left;

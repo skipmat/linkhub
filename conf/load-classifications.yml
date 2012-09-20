@@ -1,0 +1,14 @@
+LinkClassification("Java"): 
+        classification: "Java"
+LinkClassification("Javascript"): 
+        classification: "Javascript"
+LinkClassification("CSS"): 
+        classification: "CSS"
+LinkClassification("HTML"): 
+        classification: "HTML"
+LinkClassification("TDD"): 
+        classification: "TDD"
+LinkClassification("XP"): 
+        classification: "XP"
+LinkClassification("Misc"): 
+        classification: "Misc"
