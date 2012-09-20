@@ -14,7 +14,7 @@ public class UsefulLinks extends CRUD {
 		redirect("/UsefulLinks/list");
 
 	}
-
+	
 	public static void editMe(Long id, String field, String value) {
 		UsefulLink link = UsefulLink.findById(id);
 		if (field.equals("submitter")) {

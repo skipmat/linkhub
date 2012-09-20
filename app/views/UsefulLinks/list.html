@@ -130,16 +130,13 @@ function limitText(limitField, limitCount, limitNum) {
 </script>
 
 
-
-
-
 <div id="crudList" class="${type.name}">
    <div id=buttonPannel>
-    	<p id="crudListAdd">
+       	 <p>
        	 <a href="@{blank()}">&{'crud.add', type.modelName}</a>
-    	</p>  
-   		<p id="crudListAddClassification">
-        	<a href="/admin/classifications">&{'crud.add', 'classification'}</a>
+         </p>
+         <p>
+         <a href="/admin/classifications">&{'crud.add', 'classification'}</a>
     	</p>
  	</div> 
    
@@ -161,7 +158,7 @@ function limitText(limitField, limitCount, limitNum) {
      	#{/crud.custom}	
    	
   		#{crud.custom 'submitter'}
-   			<span id="submitter-${object.id}">by ${object.submitter} on ${object.postedAt}</span>
+   			<span id="submitter-${object.id}">${object.submitter} on ${object.postedAt}</span>
   		#{/crud.custom}
      	
 		#{crud.custom 'rating'}

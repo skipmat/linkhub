@@ -1,9 +1,10 @@
 crud.title=Link-Hub
 link=Link
 classification=Classification 
-description=Description
+description=Comment
 postedAt=Posted
-submitter=Submitted
+submitter=Submitted By
 rating=	Rate Article
 UsefulLinks=Useful Links
 LinkClassification=Link Classification
+sendMail = Mail Notification

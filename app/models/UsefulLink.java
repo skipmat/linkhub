@@ -35,17 +35,25 @@ public class UsefulLink extends Model {
 	public String submitter;
 
 	@Required
+	public boolean sendMail;
+	
+	@Required
 	@Hidden
 	public int rating;
 
 	@Override
 	public void _save() {
-		
 		if (!link.startsWith("http://")){
 			link = "http://" + link;
 		}
 		super._save();
-		Mails.mailRecipients(this);
+		if (sendMail){
+			Mails.mailRecipients(this);
+		}
+	}
+	
+	public void saveRating() {
+		super._save();
 	}
 	
 	public void saveRating() {

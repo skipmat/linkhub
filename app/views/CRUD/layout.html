@@ -8,14 +8,9 @@
     </head>
     <body id="crud">
         <div id="crudHeader">
-            <h1><a href="/">&{'crud.title'}</a></h1>
+            <h1><img id="i" src="/public/images/link.png"</img><a href="/">&{'crud.title'}</a></h1>
         </div>
 
-#{if request.actionMethod != 'index'}
-            <div id="crudBreadcrumb">
-               
-            </div>
-#{/if}
 
 #{if flash.success}
             <div class="crudFlash flashSuccess">

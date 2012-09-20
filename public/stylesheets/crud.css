@@ -6,28 +6,29 @@
 	font-family: 'Helvetica', 'Arial', 'Sans';
 	font
 	font-size: 110%;
-	color: #111;
-	background-image: url("/public/images/Super-mario-wallpaper-1920x1200.jpg");
+	color: #444;
+	background-image: url("/public/images/Super-mario-wallpaper-1920x1200edit2.jpg");
 	background-repeat:no-repeat;
 	background-size:cover;
-	
 }
 
 /** Header **/
 
 #crud #crudHeader {
-	padding: 10px 20px;
+	padding: 6px 20px;
 }
 
 #crud #crudHeader h1 {
 	margin: 0;
 	font-weight: normal;
-	font-size:65px;
+	font-size:40px;
+	font-weight:bold;	
 }
 
 #crud #crudHeader h1 a {
-	color: gold;
+	color: white;
 	text-decoration: none;
+	padding-left:10px;
 }
 
 /** Flash message **/
@@ -54,7 +55,7 @@
 }
 
 #crud #crudContent h2 {
-	color: #333;
+	color: #444;
 	font-weight: normal;
 	margin-top: 10px;
 }
@@ -166,7 +167,7 @@ label {
 	font-weight: bold;
 	width: 20%;
 	float: left;
-	color: #666;
+	color: #444;
 	cursor: pointer;
 }
 
