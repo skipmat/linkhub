@@ -56,10 +56,6 @@ public class UsefulLink extends Model {
 		super._save();
 	}
 	
-	public void saveRating() {
-		super._save();
-	}
-	
 	@Override
 	public void _delete(){
 		super._delete();
