@@ -34,7 +34,6 @@ public class UsefulLink extends Model {
 	@Required
 	public String submitter;
 
-	@Required
 	public boolean sendMail;
 	
 	@Required

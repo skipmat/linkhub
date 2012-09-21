@@ -5,3 +5,4 @@ UsefulLink("vvavedvd"):
     classification: Misc
     postedAt: 01/01/2012
     rating: 0
+    sendMail: false
