@@ -39,6 +39,10 @@ border-color: #0089BA;
 color: #0089BA;
 }
 
+table td a {
+color:#7C76B8;
+}
+
 #deletebutton:active {
 border-color: red;
 color: red;
