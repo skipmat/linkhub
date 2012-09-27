@@ -1,0 +1,266 @@
+<project basedir="." default="auto-test" name="">
+
+	<property name="app.dir" value="${deploy.dir}/${project.name}" />
+	<property name="tmp.dir" value="tmp" />
+	<property name="jdpa.port" value="8000" />
+	<property environment="env" />
+
+	<target name="check-build-params" depends="list-params">
+		<fail unless="local.play.home">You need to specify the {local.play.home}</fail>
+		<fail unless="port">You need to specify the {port} the app will listen on</fail>
+	</target>
+
+	<target name="check-copy-params" depends="check-build-params">
+		<fail unless="project.name">You need to specify the {project.name}</fail>
+		<fail unless="host">You need to specify the remote {host} to deploy to</fail>
+		<fail unless="user">You need to specify the {user} login</fail>
+		<fail unless="deploy.dir">You need to specify the remote {deploy.dir} for the tarballs</fail>
+		<fail unless="keyfile">Computer says no, specify the ssh {keyfile}</fail>
+		<fail unless="tag">You need to specify the {tag} to deploy</fail>
+	</target>
+
+	<target name="check-deploy-params" depends="check-copy-params">
+		<fail unless="remote.play.home">You need to specify the {remote.play.home}</fail>
+		<fail unless="mode">You need to specify the server {mode} (stage/prod/dev...)</fail>
+	</target>
+
+	<target name="list-params">
+		<echo message="----- build/compile params ------" />
+		<echo message="local.play.home">: ${local.play.home}</echo>
+		<echo message="port">: ${port}</echo>
+		<echo message="----- artefact params ------" />
+		<echo message="project.name">: ${project.name}</echo>
+		<echo message="host">: ${host}</echo>
+		<echo message="user">: ${user}</echo>
+		<echo message="deploy.dir">: ${deploy.dir}</echo>
+		<echo message="keyfile">: ${keyfile}</echo>
+		<echo message="tag">: ${tag}</echo>
+		<echo message="tmp.dir">: ${tmp.dir}</echo>
+		<echo message="----- remote deploy params ------" />
+		<echo message="app.dir">: ${app.dir}</echo>
+		<echo message="remote.play.home">: ${remote.play.home}</echo>
+		<echo message="mode">: ${mode}</echo>
+		<echo message="----- calculated params ------" />
+		<echo message="deploy.fqdir = ${deploy.fqdir}" />
+		<echo message="deploy.name = ${deploy.name}" />
+		<echo message="deploy.latest.name = ${deploy.latest.name}" />
+	</target>
+
+	<target name="clean-and-sync" depends="check-build-params" >
+		<antcall target="clean-play" />
+		<antcall target="normal-deps-mode" />
+		<antcall target="include-module-deps-mode" />
+		<antcall target="eclipsify" />
+	</target>
+
+	<target name="clean-play">
+		<delete dir="${tmp.dir}" />
+		<exec executable="${local.play.home}/play" failonerror="true">
+			<arg value="clean" />
+		</exec>
+		<mkdir dir="${tmp.dir}" />
+	</target>
+
+	<target name="normal-deps-mode" unless="include.module">
+		<exec executable="${local.play.home}/play" failonerror="true">
+			<arg value="deps" />
+			<arg value="--sync" />
+                        <arg value="--forceCopy" />
+		</exec>
+	</target>
+
+	<target name="include-module-deps-mode" if="include.module">
+		<exec executable="${local.play.home}/play" failonerror="true">
+			<arg value="deps" />
+			<arg value="--sync" />
+			<arg value="--%${include.module}" />
+                        <arg value="--forceCopy" />
+		</exec>
+	</target>
+
+	<target name="eclipsify">
+		<exec executable="${local.play.home}/play" failonerror="true">
+			<arg value="eclipsify" />
+		</exec>
+	</target>
+
+	<target name="webdrive-remote" depends="clean-and-sync">
+		<condition property="remote.browsers" value="-Dwebdrive.remote.browsers=${webdrive.remote.browsers}">
+			<isset property="webdrive.remote.browsers" />
+		</condition>
+		<property name="remote.browsers" value="" />
+		<echo message="remote browsers: ${remote.browsers}" />
+
+		<condition property="remote.selenium.hub" value="-Dwebdrive.remoteUrl=${webdrive.remoteUrl}">
+			<isset property="webdrive.remoteUrl" />
+		</condition>
+		<property name="remote.selenium.hub" value="" />
+		<echo message="remote selenium hub: ${remote.selenium.hub}" />
+
+		<exec executable="${local.play.home}/play" failonerror="true">
+			<arg value="webdrive:remote" />
+			<arg value="${remote.browsers}" />
+			<arg value="${remote.selenium.hub}" />
+		</exec>
+	</target>
+
+	<target name="webdrive-local" depends="clean-and-sync">
+		<condition property="local.classes" value="-Dwebdrive.classes=${webdrive.classes}">
+			<isset property="webdrive.classes" />
+		</condition>
+		<property name="local.classes" value="" />
+		<echo message="webdrive.classes: ${local.classes}" />
+
+		<exec executable="${local.play.home}/play" failonerror="true">
+			<arg value="webdrive:local" />
+			<arg value="${local.classes}" />
+		</exec>
+	</target>
+
+	<target name="auto-test" depends="clean-and-sync">
+		<condition property="emulate.browser" value="-DheadlessBrowser=${headlessBrowser}">
+			<isset property="headlessBrowser" />
+		</condition>
+		<property name="emulate.browser" value="" />
+		<echo message="emulate.browser: ${emulate.browser}" />
+		<exec executable="${local.play.home}/play" failonerror="true">
+			<arg value="auto-test" />
+		</exec>
+	</target>
+
+	<target name="deploy" depends="check-deploy-params">
+		<antcall target="build-deployable" />
+		<antcall target="stop-transfer-start" />
+	</target>
+
+	<target name="copy-to-dropzone" depends="get-copy-vars">
+		<antcall target="build-deployable" />
+		<sshexec command="mkdir -p ${deploy.dir}" host="${host}" username="${user}" keyfile="${keyfile}" passphrase="" trust="yes" failonerror="true" />
+		<scp verbose="false" sftp="false" file="${tmp.dir}/${deploy.name}.tgz" remotetofile="${user}@${host}:${deploy.dir}/${deploy.name}.tgz" keyfile="${keyfile}" passphrase="" trust="yes" />
+		<scp verbose="false" sftp="false" file="${tmp.dir}/${deploy.name}.tgz" remotetofile="${user}@${host}:${deploy.dir}/${deploy.latest.name}" keyfile="${keyfile}" passphrase="" trust="yes" />
+		<scp verbose="false" sftp="false" file="version.txt" remotetofile="${user}@${host}:${deploy.dir}/version.txt" keyfile="${keyfile}" passphrase="" trust="yes" />
+	</target>
+
+	<target name="precompile">
+		<exec executable="${local.play.home}/play" failonerror="true">
+			<arg value="precompile" />
+			<arg value="--%stage" />
+		</exec>
+	</target>
+
+	<target name="build-deployable" depends="get-copy-vars, generate-version-files">
+		<antcall target="make-precompiled-deployable" />
+		<antcall target="make-source-deployable" />
+	</target>
+
+	<target name="get-deployable-name">
+		<exec executable="git" outputproperty="tag" failonerror="true">
+			<arg value="describe" />
+			<arg value="--tags" />
+			<arg value="--exact-match" />
+		</exec>
+	</target>
+
+	<target name="get-deploy-vars" depends="get-copy-vars, check-deploy-params">
+		<property name="deploy.fqdir" value="${deploy.dir}/${deploy.name}" />
+
+		<echo message="deploy.fqdir = ${deploy.fqdir}" />
+	</target>
+
+	<target name="get-copy-vars" depends="get-deployable-name, check-copy-params">
+		<property name="deploy.name" value="${project.name}-${tag}" />
+		<property name="deploy.latest.name" value="${project.name}-latest.tgz" />
+
+		<echo message="deploy.name = ${deploy.name}" />
+		<echo message="deploy.latest.name = ${deploy.latest.name}" />
+	</target>
+
+
+	<target name="generate-version-files" depends="get-copy-vars">
+		<echo file="public/version.txt">${tag}@${env.BUILD_ID}</echo>
+		<echo file="version.txt">${deploy.name}.tgz</echo>
+	</target>
+
+	<target name="stop-transfer-start" depends="get-deploy-vars">
+		<antcall target="stop" />
+		<antcall target="transfer" />
+		<antcall target="start" />
+	</target>
+
+	<target name="stop" depends="get-deploy-vars">
+		<sshexec failonerror="false" command="cd ${app.dir}; ${remote.play.home}/play stop" host="${host}" username="${user}" keyfile="${keyfile}" passphrase="" trust="yes" />
+	</target>
+
+	<target name="make-source-deployable" unless="precompiled" depends="get-copy-vars">
+		<echo message="making source deployable" />
+		<antcall target="clean-and-sync" />
+		<tar compression="gzip" destfile="${tmp.dir}/${deploy.name}.tgz">
+			<tarfileset dir="." filemode="755" username="ant" group="ant">
+				<include name="app/**" />
+				<include name="conf/**" />
+				<include name="lib/**" />
+				<include name="public/**" />
+				<include name="mapping.txt" />
+				<include name="modules/**" />
+				<include name="db/**" />
+				<include name="data/**" />
+				<include name="staticData/**" />
+				<include name="test/**" />
+			</tarfileset>
+		</tar>
+	</target>
+
+	<target name="make-precompiled-deployable" if="precompiled" depends="get-copy-vars">
+		<echo message="making precompiled deployable" />
+		<antcall target="clean-and-sync" />
+		<antcall target="precompile" />
+
+		<tar compression="gzip" destfile="${tmp.dir}/${deploy.name}.tgz">
+			<tarfileset dir="." filemode="755" username="ant" group="ant">
+				<include name="conf/**" />
+				<include name="lib/**" />
+				<include name="precompiled/**" />
+				<include name="public/**" />
+				<include name="mapping.txt" />
+				<include name="app/views/**" />
+				<include name="staticData/**" />
+				<include name="db/**" />
+				<include name="data/**" />
+				<include name="modules/**" />
+			</tarfileset>
+		</tar>
+	</target>
+
+
+	<target name="transfer" depends="get-deploy-vars">
+		<antcall target="check-and-create-remote-deploy-dir" />
+
+		<scp verbose="false" sftp="false" file="${tmp.dir}/${deploy.name}.tgz" todir="${user}@${host}:${deploy.dir}" keyfile="${keyfile}" passphrase="" trust="yes" />
+		<sshexec failonerror="true" timeout="360000" command="cd ${deploy.fqdir}; 
+			tar zxvf ../${deploy.name}.tgz; 
+			find . -exec touch '{}' \;;
+			cd ..;
+			ln -nsf ${deploy.name} ${project.name};
+			rm -rf ${deploy.name}.tgz;" host="${host}" username="${user}" keyfile="${keyfile}" passphrase="" trust="yes" />
+	</target>
+
+	<target name="start" depends="get-deploy-vars">
+		<antcall target="start-precompiled" />
+		<antcall target="start-source" />
+	</target>
+
+
+	<target name="start-precompiled" depends="get-deploy-vars" if="precompiled">
+		<sshexec failonerror="true" timeout="20000" command="cd ${app.dir}; ${remote.play.home}/play evolutions:apply --%${mode} --http.port=${port} -Dprecompiled=true; nohup ${remote.play.home}/play start --%${mode} --http.port=${port} -Dprecompiled=true -Xmx512m &amp;" host="${host}" username="${user}" keyfile="${keyfile}" passphrase="" trust="yes" />
+	</target>
+
+	<target name="start-source" depends="get-deploy-vars" unless="precompiled">
+		<sshexec failonerror="true" timeout="20000" command="cd ${app.dir}; ${remote.play.home}/play evolutions:apply --%${mode} --http.port=${port}; nohup ${remote.play.home}/play start --%${mode} --http.port=${port} -Xmx512m &amp;" host="${host}" username="${user}" keyfile="${keyfile}" passphrase="" trust="yes" />
+	</target>
+
+	<target name="check-and-create-remote-deploy-dir" depends="get-deploy-vars">
+		<sshexec command="mkdir -p ${deploy.fqdir}" host="${host}" username="${user}" keyfile="${keyfile}" passphrase="" trust="yes" />
+	</target>
+
+</project>
+
