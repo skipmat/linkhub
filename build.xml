@@ -56,7 +56,6 @@
 	<target name="clean-play">
 		<delete dir="${tmp.dir}" />
 		<exec executable="${local.play.home}/play" failonerror="true">
-			<arg value="clean" />
 		</exec>
 		<mkdir dir="${tmp.dir}" />
 	</target>
