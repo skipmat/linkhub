@@ -49,12 +49,22 @@ function limitText(limitField, limitCount, limitNum) {
       		value = cookiearray[i].split('=')[1];
       		
       		if (name != "" && value != ""){
-      			cookieName = ("linkHubIdRating-" + documentId);      		
+      		
+      		alert("name: " + name);
+      		alert("value: " + value);
+      		
+      			cookieName = ("linkHubIdRating-" + documentId);      	
+      			
+      			alert("cookieName: " + cookieName);	
+      			
       			documentId = documentId.toString();
       			name = name.toString();
       			value = value.toString();
       		
       				if (cookieName == name){
+      				
+      				alert("IN");
+      				
       					if (value == documentId){
       						alert("You've already rated this article");
       						alreadyRated = true;
