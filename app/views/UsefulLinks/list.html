@@ -9,6 +9,30 @@
 <script>
 jQuery.noConflict();
 
+function updateStars(documentId, rating) {
+		if (rating < 0 ) {
+			jQuery('#trooper1-' + documentId).show();
+		} else {
+			jQuery('#trooper1-' + documentId).hide();
+		}
+		if (rating < - 4 ) {
+			jQuery('#trooper2-' + documentId).show();
+		} else {
+			jQuery('#trooper2-' + documentId).hide();
+		}
+		if (rating > 0 ) {
+			jQuery('#star1-' + documentId).show();
+		} else {
+			jQuery('#star1-' + documentId).hide();
+		}
+		if (rating > 4 ) {
+			jQuery('#star2-' + documentId).show();
+		}	else {
+			jQuery('#star2-' + documentId).hide();
+		}
+		
+	}
+
 function limitText(limitField, limitCount, limitNum) {
 	if (limitField.value.length > limitNum) {
 		limitField.value = limitField.value.substring(0, limitNum);
@@ -29,12 +53,14 @@ function limitText(limitField, limitCount, limitNum) {
 	function rateDown(documentId){
 		jQuery.get('Rating/decreaseRating', {id : documentId} ).success(function(data){
 			jQuery('#rating-' + documentId).html(data);
+			updateStars(documentId, data);
 		})
 	}
 	
 	function rateUp(documentId){
 		jQuery.get('Rating/increaseRating', {id : documentId} ).success(function(data){
 			jQuery('#rating-' + documentId).html(data);
+			updateStars(documentId, data);
 		})
 	}
 	
@@ -109,11 +135,31 @@ function limitText(limitField, limitCount, limitNum) {
      	
 		#{crud.custom 'rating'}
      		</div>
+     		
+     		<div id="negativeRating">
+     			<span><img id="trooper2-${object.id}" src="/public/images/missile.png" style="float:center; padding-left: 2px; 
+     				#{if object.rating > - 4}display:none#{/if}" />
+     			</span>
+     			<span><img id="trooper1-${object.id}" src="/public/images/trooper.png" style="float:right; padding-left: 2px; 
+     				#{if object.rating == 0 || object.rating > 0}display:none#{/if}" />
+     			</span>
+     		</div>
+     		
 			<div id="ratingInteraction" style="display:inline-block; padding-top: 9px;">
 				<a class="button" style="font-size:18px" id="down" href="javascript:checkCookies(${object.id}, 'down')">-</a>
-     			<span class="rating" id="rating-${object.id}">${object.rating}</span>
+     			<span class="rating" id="rating-${object.id}" style="display: inline-block; width: 18px; text-align:center;">${object.rating}</span>
      			<a class="button" style="font-size:18px" id="up" href="javascript:checkCookies(${object.id}, 'up')" >+</a>
      		</div>
+     		
+     		<div id="positiveRating"style="display:inline-block";>
+     			<span><img id="star1-${object.id}" src="/public/images/mario_sizeup.png" style="float:center; padding-left: 2px; 
+     				#{if object.rating == 0 || object.rating < 0}display:none#{/if}" />
+     			</span>
+     			<span><img id="star2-${object.id}" src="/public/images/mario_oneup.png" style="float:center; padding-left: 2px;
+     				#{if object.rating < 5}display:none#{/if}" /
+     			</span>
+     		</div>
+     		
      		<a class="button" id="deletebutton" href="javascript:remove(${object.id}, '${object.submitter}')">Delete</a>
      	#{/crud.custom}
     	#{/crud.table} 

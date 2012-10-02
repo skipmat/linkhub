@@ -18,6 +18,12 @@
 	padding: 6px 20px;
 }
 
+#negativeRating, #positiveRating{
+	width: 68px;
+	display:inline-block;
+	height:22px;
+}
+
 .rating{
 padding-left:10px;
 padding-right:10px;
@@ -26,6 +32,11 @@ padding-right:10px;
 #rating{
 font-size: 20px;
 margin: 13px;
+}
+
+.UsefulLinks  table th:last-child {
+	margin-left: 82px;
+	
 }
 
 .button:hover, .button:focus, .button.is-active, a:hover, a:focus, a.is-active {
@@ -60,10 +71,8 @@ input[type=submit]:hover, input[type=submit]:focus, input[type=submit].is-active
 	color: #00AFED;
 }
 
-input[type=text]{
+input[type=text], select{
 	border-color: #626270;
-	background: white;
-	color: white;
 	background-color:#626285;
 }
 
