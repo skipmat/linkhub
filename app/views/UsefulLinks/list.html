@@ -125,7 +125,7 @@ function limitText(limitField, limitCount, limitNum) {
      	#{/crud.custom}
        	
        	#{crud.custom 'link'}
-       		<span id="link-${object.id}"><a href="${object.link}">${object.description}</a>
+       		<span id="link-${object.id}"><a href="${object.link}" target="_blank">${object.description}</a>
      		</span>
      	#{/crud.custom}	
    	
@@ -152,11 +152,13 @@ function limitText(limitField, limitCount, limitNum) {
      		</div>
      		
      		<div id="positiveRating"style="display:inline-block";>
-     			<span><img id="star1-${object.id}" src="/public/images/mario_sizeup.png" style="float:center; padding-left: 2px; 
-     				#{if object.rating == 0 || object.rating < 0}display:none#{/if}" />
+     			<span>
+     				<img id="star1-${object.id}" src="/public/images/mario_sizeup.png" style="float:center; padding-left: 2px; 
+     					#{if object.rating == 0 || object.rating < 0}display:none#{/if}" />
      			</span>
-     			<span><img id="star2-${object.id}" src="/public/images/mario_oneup.png" style="float:center; padding-left: 2px;
-     				#{if object.rating < 5}display:none#{/if}" /
+     			<span>
+     				<img id="star2-${object.id}" src="/public/images/mario_oneup.png" style="float:center; padding-left: 2px;
+     					#{if object.rating < 5}display:none#{/if}" />
      			</span>
      		</div>
      		

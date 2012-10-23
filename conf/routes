@@ -3,7 +3,8 @@
 # ~~~~
 
 # Home page
-GET     /                                       UsefulLinks.list
+GET     /				           	 			UsefulLinks.list(order:'DESC',orderBy:'postedAt')
+GET     /				            			UsefulLinks.list
 *       /admin              					module:crud
 
 # Ignore favicon requests
