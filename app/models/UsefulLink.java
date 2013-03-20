@@ -1,13 +1,14 @@
 package models;
 
-import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import notifiers.Mails;
-
 import play.data.validation.MaxSize;
 import play.data.validation.Required;
 import play.db.jpa.Model;
@@ -28,8 +29,8 @@ public class UsefulLink extends Model {
 	public LinkClassification classification;
 
 	@Required
-	@Hidden
-	public String postedAt;
+	@Temporal(TemporalType.DATE)
+	public Date postedAt;
 
 	@Required
 	public String submitter;
@@ -69,7 +70,6 @@ public class UsefulLink extends Model {
 	}
 	
 	public UsefulLink(){
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy HH:mm");
-		postedAt = formatter.format(new Date());
+		postedAt = Calendar.getInstance().getTime();
 	}
 }

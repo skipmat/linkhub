@@ -59,6 +59,10 @@ border-color: red;
 color: red;
 }
 
+div.crudField.crud_date{
+	display: none;	
+}
+
 #deletebutton:hover, #deletebutton:focus, #deletebutton.is-active, #classdeletebutton:hover {
 	border-color: red;
 	background: rgba(0, 175, 237, 0.04);
