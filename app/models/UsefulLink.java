@@ -1,12 +1,9 @@
 package models;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import notifiers.Mails;
 import play.data.validation.MaxSize;
@@ -28,8 +25,6 @@ public class UsefulLink extends Model {
 	@ManyToOne
 	public LinkClassification classification;
 
-	@Required
-	@Temporal(TemporalType.DATE)
 	public Date postedAt;
 
 	@Required
@@ -70,6 +65,6 @@ public class UsefulLink extends Model {
 	}
 	
 	public UsefulLink(){
-		postedAt = Calendar.getInstance().getTime();
+		postedAt = new Date();
 	}
 }

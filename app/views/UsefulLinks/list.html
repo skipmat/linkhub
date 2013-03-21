@@ -119,6 +119,10 @@ function limitText(limitField, limitCount, limitNum) {
     <div id="crudListTable">
         #{crud.table fields:['classification','link','submitter','postedAt','rating']}
        	
+       	#{crud.custom 'postedAt'}
+       	<span id="classification">${new Date(object.postedAt.getTime()).format("dd-MM-yyyy HH:mm")}</a>
+     		</span>
+       	#{/crud.custom}
        	#{crud.custom 'classification'}
        		<span id="classification">${object.classification}</a>
      		</span>
